@@ -1,0 +1,350 @@
+Algoritmo "RPG"
+Var
+   jogador: caracter
+   jogadoron :logico
+   continuarjogo:logico
+   jogadorhp,jogadorhpmax,jogadoratk,jogadordef,jogadorca:inteiro
+   jogadorlevel,jogadorexp:inteiro
+   itens: caracter
+   mob:caracter
+   mobhp,mobatk,mobdef,mobca,mobce,moblevel,mobexp:inteiro
+
+   ud6,dd6,td6,qd6,cd6,sd6:inteiro
+   danocausado,danosofrido,acerto:inteiro
+
+   continuar:caracter
+   sair :inteiro
+
+procedimento statusposluta
+inicio
+   timer 0
+   escreval("Nome        ",jogador)
+   escreval("Level       ",jogadorlevel)
+   escreva("HP Atual     ",jogadorhp)
+   escreval("(",jogadorhpmax," )")
+   escreval("Ataque      ",jogadoratk)
+   escreval("Defesa      ",jogadordef)
+   escreval("Chance de acerto ",jogadorca)
+   escreval("EXP         ",jogadorexp)
+   escreval("Itens       ",itens)
+fimprocedimento
+
+
+procedimento experiencia
+inicio
+   timer 0
+   jogadorexp <- jogadorexp + mobexp
+   se (jogadorexp >= (10*jogadorlevel)) entao
+      jogadorlevel <- jogadorlevel + 1
+      jogadorhpmax <- jogadorhpmax + 5
+      jogadorhp <- jogadorhpmax
+      jogadoratk <- jogadoratk + 2
+      jogadordef <- jogadordef + 2
+      jogadorca <- jogadorca + 2
+      timer 1000
+      escreval("Seu nível atual é: ",jogadorlevel)
+      escreval("Você subiu de nível e ganhou")
+      escreva("Hp + ")
+      escreval("Ataque +2")
+      escreval("Defesa +2")
+      escreval("Chance de acerto +2")
+      timer 0
+   fimse
+fimprocedimento
+
+procedimento status
+var
+   espaco:inteiro
+inicio
+   timer 0
+   escreva("Nome       ",jogador)
+   para espaco de 1 ate 3 faca
+      escreva(" ")
+   fimpara
+   escreval("Nome   ",mob)
+   escreva("Level     ",jogadorlevel)
+   para espaco de 1 ate 9 faca
+      escreva(" ")
+   fimpara
+   escreval("Level  ",moblevel)
+   escreva("HP Atual ",jogadorhp)
+   escreva(" (",jogadorhpmax," )")
+   para espaco de 1 ate 2 faca
+      escreva(" ")
+   fimpara
+   escreval("HP     ",mobhp)
+fimprocedimento
+
+
+
+procedimento danos
+inicio
+   timer 0
+   danocausado <- (jogadoratk + ud6) - (mobdef + cd6)
+   danosofrido <- (mobatk + qd6) - (jogadordef + dd6)
+   acerto <- (jogadorca + td6) - (mobce + sd6)
+   se danosofrido < 0 entao
+      danosofrido <- 0
+   fimse
+   se danocausado < 0 entao
+      danocausado <- 0
+   fimse
+fimprocedimento
+
+
+procedimento dados
+inicio
+   timer 150
+   escreval("Jogandos os dados")
+   aleatorio on
+   aleatorio 1,6
+   leia(ud6)
+   leia(dd6)
+   leia(td6)
+   leia(qd6)
+   leia(cd6)
+   leia(sd6)
+   limpatela
+   escreval(Jogador," rolou",ud6," para ataque",dd6," para defesa",td6," para acerto")
+   escreval(mob," rolou",qd6," para ataque",cd6," para defesa",sd6," para esquiva")
+   aleatorio off
+fimprocedimento
+
+procedimento lutando
+var
+   lutando: inteiro
+inicio
+   para lutando de 1 ate 4 faca
+      escreval("LUTANDO...",lutando*25,"%")
+      limpatela
+   fimpara
+fimprocedimento
+
+procedimento carregando
+var
+   carregando: inteiro
+inicio
+   para carregando de 1 ate 4 faca
+      escreval("Carregando...",carregando*25,"%")
+      limpatela
+   fimpara
+fimprocedimento
+
+
+procedimento jogador
+var
+   statusmenu:inteiro
+inicio
+   carregando
+   timer 0
+   limpatela
+   escreval("Nome        ",jogador)
+   escreval("Level       ",jogadorlevel)
+   escreva("HP Atual     ",jogadorhp)
+   escreval("(",jogadorhpmax," )")
+   escreval("Ataque      ",jogadoratk)
+   escreval("Defesa      ",jogadordef)
+   escreval("Chance de acerto ",jogadorca)
+   escreval("EXP         ",jogadorexp)
+   escreval("Itens       ",itens)
+   escreval("1..Retornar ao menu")
+   leia(statusmenu)
+   se (statusmenu = 1) entao
+      limpatela
+      carregando
+      menu
+   fimse
+fimprocedimento
+
+procedimento combat
+var
+   combat:caracter
+inicio
+   timer 300
+   status
+   escreval("Deseja lutar 'S/N'")
+   leia(combat)
+   se (combat = "S") ou (combat = "s") entao
+      lutando
+      dados
+      danos
+      se acerto > 0 entao
+         jogadorhp <- jogadorhp - danosofrido
+         mobhp <- mobhp - danocausado
+         escreval("Sua chance de acerto é de ",acerto)
+         escreval("Você causou",danocausado," pontos de dano")
+         escreval("Você sofreu",danosofrido," pontos de dano")
+      senao
+         jogadorhp <- jogadorhp - danosofrido
+         escreval("Sua chance de acerto é de ",acerto)
+         escreval("Você errou o ataque")
+         escreval("Você sofreu ,",danosofrido," pontos de dano")
+      fimse
+
+      se (mobhp < 1) entao
+
+         aleatorio 1,50
+         lista "area1itens"
+         leia(itens)
+         aleatorio off
+         limpatela
+         timer 500
+         escreval("Parabens, você derrotou 1 ",mob)
+         escreval("Você recebeu ",mobexp," de experiência")
+         escreval("Você recebeu ",itens," como recompensa pelo combate")
+         experiencia
+         timer 500
+         timer 0
+         statusposluta
+         escreval("")
+         escreval("Pressione <ENTER> para retornar")
+         leia(continuar)
+         timer 1000
+
+         escreval("Retornando...")
+         menu
+
+      fimse
+      se (jogadorhp < 1) entao
+         timer 300
+         limpatela
+         escreval("Seu HP atual é",playerhp)
+
+         escreval("Você morreu!")
+
+         escreval("Deseja recomeçar 'S/N'?")
+         timer 0
+         leia(continuar)
+         se (continuar = "S") ou (continuar = "s") entao
+            jogadorhp <- 15
+            jogadorhpmax  <- 15
+            jogadoratk  <- 1
+            jogadordef  <- 1
+            jogadorca  <- 1
+            jogadorlevel  <- 1
+            jogadorexp <- 0
+            itens <- "nada"
+            carregando
+         senao
+            limpatela
+            escreval("Obrigado por jogar!")
+         fimse
+      fimse
+
+   senao
+      limpatela
+      escreval("Obrigado")
+   fimse
+fimprocedimento
+procedimento mob
+inicio
+   timer 0
+   aleatorio on
+   lista "area1mob"
+   leia(mob)
+   aleatorio off
+   limpatela
+   se mob="slime" entao
+      limpatela
+      escreval("Você encontrou um ",mob)
+      mobhp <- 3
+      mobatk  <- 1
+      mobdef  <- 1
+      mobce <- 1
+      moblevel  <- 1
+      mobexp <- 5
+      combat
+   senao
+      se mob="lobo" entao
+         limpatela
+         escreval("Você encontrou um ",mob)
+         mobhp <- 3
+         mobatk  <- 1
+         mobdef  <- 1
+         mobce <- 1
+         moblevel  <- 1
+         mobexp <- 5
+         combat
+      senao
+         se mob="zumbi" entao
+            limpatela
+            escreval("Você encontrou um ",mob)
+            mobhp <- 3
+            mobatk  <- 1
+            mobdef  <- 1
+            mobce <- 1
+            moblevel  <- 1
+            mobexp <- 5
+            combat
+         senao
+            se mob="golem" entao
+               mobhp <- 3
+               mobatk  <- 1
+               mobdef  <- 1
+               mobce <- 1
+               moblevel  <- 1
+               mobexp <- 5
+               limpatela
+               escreval("Você encontrou um ",mob)
+               combat
+            fimse
+         fimse
+      fimse
+   fimse
+fimprocedimento
+
+procedimento menu
+var
+   menu:inteiro
+inicio
+   timer 150
+   mobhp <- 0
+   mobatk  <- 0
+   mobdef  <- 0
+   mobce <- 0
+   moblevel  <- 0
+   mobexp <- 0
+   limpatela
+   escreval("MENU")
+   escreval("")
+   escreval("1...Status jogador")
+   escreval("2...Lutar")
+   escreval("3...Sair")
+   leia(menu)
+   escolha menu
+   caso 1
+      jogador
+   caso 2
+      mob
+   caso 3
+      limpatela
+      escreval("Obrigado!")
+   fimescolha
+fimprocedimento
+Inicio
+   // Seção de Comandos, procedimento, funções, operadores, etc...
+   jogadorhp <- 15
+   jogadorhpmax  <- 15
+   jogadoratk  <- 5
+   jogadordef  <- 5
+   jogadorca  <- 5
+   jogadorlevel  <- 1
+   jogadorexp <- 0
+   itens <- "nada"
+   escreval("Insira seu nome")
+   leia(jogador)
+   timer 500
+   limpatela
+   escreval("Bem vindo ",jogador)
+   escreval("")
+   timer 1000
+   limpatela
+   escreval("Indo ao HUB")
+   timer 0
+   carregando
+   menu
+   repita
+      combat
+   ate (jogadorhp <= 0) ou (mobhp <= 0)
+
+Fimalgoritmo
