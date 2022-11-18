@@ -1,1 +1,0 @@
-# RPG-em-Portugol-VisuALG-
