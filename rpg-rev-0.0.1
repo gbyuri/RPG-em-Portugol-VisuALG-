@@ -1,0 +1,411 @@
+Algoritmo "RPG"
+Var
+   main : logico
+   ////////////////////////////////////////////////////////////////////////////////
+   jogador: caracter
+   jogadorhp,jogadorhpmax,jogadoratk,jogadordef,jogadorca:inteiro
+   jogadorlevel,jogadorexp, jogadorexpmax:inteiro
+   jogadoratkx,jogadordefx,jogadorhpx,jogadorcax: inteiro
+   ////////////////////////////////////////////////////////////////////////////////
+   itens:vetor[1..4] de caracter
+   itensequipados:inteiro
+   equipload: inteiro
+   item:caracter
+   equipar:caracter
+   ////////////////////////////////////////////////////////////////////////////////
+   monstro:caracter
+   mobhp,mobhpmax,mobatk,mobdef,mobca,mobce,moblevel,mobexp:inteiro
+   ////////////////////////////////////////////////////////////////////////////////
+   //ud6,dd6,td6,qd6,cd6,sd6:inteiro
+   danocausado,danosofrido,acerto:inteiro
+
+
+   ////////////////////////////////////////////////////////////////////////////////
+procedimento statusposluta
+inicio
+   timer 0
+   escreval("Nome        ",jogador)
+   escreval("Level       ",jogadorlevel)
+   escreva("HP Atual     ",jogadorhp)
+   escreva(" /",jogadorhpmax)
+   escreval("(",jogadorhpx," )")
+   escreva("Ataque      ",jogadoratk)
+   escreval("(",jogadoratkx," )")
+   escreva("Defesa      ",jogadordef)
+   escreval("(",jogadordefx," )")
+   escreva("Chance de acerto ",jogadorca)
+   escreval("(",jogadorcax," )")
+   escreva("EXP         ",jogadorexp)
+   escreval(" /",jogadorexpmax)
+   escreval("Itens       ",itens[1],itens[2],itens[3],itens[4])
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento experiencia
+inicio
+   timer 0
+   jogadorexp <- jogadorexp + mobexp
+   se (jogadorexp >= (10*jogadorlevel)) entao
+      jogadorlevel <- jogadorlevel + 1
+      jogadorexpmax <- 10*jogadorlevel
+      jogadorhpmax <- jogadorhpmax + 5
+      jogadorhp <- jogadorhpmax
+      jogadoratk <- jogadoratk + 2
+      jogadordef <- jogadordef + 2
+      jogadorca <- jogadorca + 2
+      timer 300
+      escreval("Parabens, você subiu de nível e ganhou")
+      escreval("Seu nível atual é: ",jogadorlevel)
+      escreval("Hp + 5")
+      escreval("Ataque +2")
+      escreval("Defesa +2")
+      escreval("Chance de acerto +2")
+      jogadorexp <- 0
+      timer 0
+   fimse
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento status
+var
+   espaco:inteiro
+inicio
+   timer 0
+   escreva("Nome       ",jogador)
+   para espaco de 1 ate 3 faca
+      escreva(" ")
+   fimpara
+   escreval("Nome   ",monstro)
+   escreva("Level     ",jogadorlevel)
+   para espaco de 1 ate 9 faca
+      escreva(" ")
+   fimpara
+   escreval("Level  ",moblevel)
+   escreva("HP Atual ",jogadorhp)
+   escreva(" /",jogadorhpmax)
+   para espaco de 1 ate 3 faca
+      escreva(" ")
+   fimpara
+   escreval("HP     ",mobhp)
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento danos
+var
+   ud6,dd6,td6,qd6,cd6,sd6:inteiro
+inicio
+   timer 250
+   escreval("Jogandos os dados")
+   aleatorio on
+   aleatorio 1,6
+   escreva("")
+   leia(ud6)
+   escreva("")
+   leia(dd6)
+   escreva("")
+   leia(td6)
+   escreva("")
+   leia(qd6)
+   escreva("")
+   leia(cd6)
+   escreva("")
+   leia(sd6)
+   limpatela
+   escreval(Jogador," rolou",ud6," para ataque",dd6," para defesa",td6," para acerto")
+   escreval(monstro," rolou",qd6," para ataque",cd6," para defesa",sd6," para esquiva")
+   aleatorio off
+   timer 0
+   danocausado <- (jogadoratk + ud6 + jogadoratkx) - (mobdef + cd6)
+   danosofrido <- (mobatk + qd6) - (jogadordef + dd6 + jogadordefx)
+   acerto <- (jogadorca + td6 + jogadorcax) - (mobce + sd6)
+   se danosofrido < 0 entao
+      danosofrido <- 0
+   fimse
+   se danocausado < 0 entao
+      danocausado <- 0
+   fimse
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento dados
+var
+   ud6,dd6,td6,qd6,cd6,sd6:inteiro
+inicio
+   timer 250
+   escreval("Jogandos os dados")
+   aleatorio on
+   aleatorio 1,6
+   leia(ud6)
+   leia(dd6)
+   leia(td6)
+   leia(qd6)
+   leia(cd6)
+   leia(sd6)
+   limpatela
+   escreval(Jogador," rolou",ud6," para ataque",dd6," para defesa",td6," para acerto")
+   escreval(mob," rolou",qd6," para ataque",cd6," para defesa",sd6," para esquiva")
+   aleatorio off
+   timer 0
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento carregando
+var
+   carregando: inteiro
+inicio
+   timer 50
+   para carregando de 1 ate 4 faca
+      escreval("Carregando...",carregando*25,"%")
+      limpatela
+   fimpara
+   timer 0
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento jogador
+var
+   statusmenu:inteiro
+inicio
+   carregando
+   enquanto statusmenu <> 1 faca
+   limpatela
+      escreval("Nome        ",jogador)
+      escreval("Level       ",jogadorlevel)
+      escreva("HP Atual     ",jogadorhp)
+      escreva(" /",jogadorhpmax)
+      escreval("(",jogadorhpx," )")
+      escreva("Ataque      ",jogadoratk)
+      escreval("(",jogadoratkx," )")
+      escreva("Defesa      ",jogadordef)
+      escreval("(",jogadordefx," )")
+      escreva("Chance de acerto ",jogadorca)
+      escreval("(",jogadorcax," )")
+      escreva("EXP         ",jogadorexp)
+      escreval(" /",jogadorexpmax)
+      escreval("Itens       ",itens[1],itens[2],itens[3],itens[4])
+      escreval("1..Retornar ao menu")
+      leia(statusmenu)
+      se (statusmenu = 1) entao
+         limpatela
+         menu
+      fimse
+   fimenquanto
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento combat
+var
+   xcombat:caracter
+   ycombat:logico
+inicio
+   ycombat <- verdadeiro
+   enquanto ycombat = verdadeiro faca
+      carregando
+      status
+      timer 300
+      escreval("Deseja lutar <S/N>")
+      leia(xcombat)
+      se (xcombat = "S") ou (xcombat = "s") entao
+         limpatela
+         carregando
+         danos
+         timer 0
+         se acerto > 0 entao
+            jogadorhp <- jogadorhp - danosofrido
+            mobhp <- mobhp - danocausado
+            timer 300
+            escreval("Sua chance de acerto é de ",acerto)
+            escreval("Você causou",danocausado," pontos de dano")
+            escreval("Você sofreu",danosofrido," pontos de dano")
+         senao
+            timer 300
+            jogadorhp <- jogadorhp - danosofrido
+            escreval("Sua chance de acerto é de ",acerto)
+            escreval("Você errou o ataque")
+            escreval("Você sofreu ,",danosofrido," pontos de dano")
+         fimse
+         se (mobhp <= 0) entao
+            timer 400
+            limpatela
+            escreval("Parabens, você derrotou 1 ",monstro)
+            escreval("Você recebeu ",mobexp," de experiência")
+            timer 0
+            aleatorio 1,4
+            lista "area1itens"
+            timer 300
+            escreval("Espólios")
+            leia(item)
+            aleatorio off
+            timer 0
+            experiencia
+            statusposluta
+            escreval("")
+            escreval("<ENTER> para retornar")
+            leia(xcombat)
+            escreval("Retornando...")
+            timer 300
+            limpatela
+            timer 0
+            ycombat <- falso
+            menu
+         fimse
+         se (jogadorhp <= 0) entao
+            timer 1000
+            limpatela
+            escreval("Seu HP atual é",playerhp)
+            escreval("Você morreu!")
+            escreval("Deseja recomeçar <S/N>?")
+            timer 0
+            leia(continuar)
+            se (continuar = "S") ou (continuar = "s") entao
+               jogadorhp <- 15
+               jogadorhpmax  <- 15
+               jogadoratk  <- 1
+               jogadordef  <- 1
+               jogadorca  <- 1
+               jogadorlevel  <- 1
+               jogadorexp <- 0
+               carregando
+            senao
+               limpatela
+               escreval("Obrigado por jogar!")
+               ycombat <- falso
+               main <- falso
+            fimse
+         fimse
+      senao
+         se (xcombat <> "n") ou (xcombat <> "N") entao
+            timer 500
+            escreval("Você fugiu do combate")
+            limpatela
+            timer 0
+            main <- falso
+            ycombat <- falso
+            menu
+         fimse
+      fimse
+   fimenquanto
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento mob
+inicio
+   carregando
+   aleatorio on
+   lista "area1mobs"
+   leia(monstro)
+   aleatorio off
+   limpatela
+   timer 300
+   se monstro="slime" entao
+      limpatela
+      escreval("Você encontrou um ",monstro)
+      timer 0
+      mobhp <- 3
+      mobhpmax <- 3
+      mobatk  <- 1
+      mobdef  <- 1
+      mobce <- 1
+      moblevel  <- 1
+      mobexp <- 5
+      combat
+   senao
+      se monstro="lobo" entao
+         limpatela
+         escreval("Você encontrou um ",monstro)
+         timer 0
+         mobhp <- 3
+         mobhpmax <- 3
+         mobatk  <- 1
+         mobdef  <- 1
+         mobce <- 1
+         moblevel  <- 1
+         mobexp <- 5
+         combat
+      senao
+         se monstro="zumbi" entao
+            limpatela
+            escreval("Você encontrou um ",monstro)
+            timer 0
+            mobhp <- 3
+            mobhpmax <- 3
+            mobatk  <- 1
+            mobdef  <- 1
+            mobce <- 1
+            moblevel  <- 1
+            mobexp <- 5
+            combat
+         senao
+            se monstro="golem" entao
+               limpatela
+               escreval("Você encontrou um ",monstro)
+               timer 0
+               mobhp <- 3
+               mobhpmax <- 3
+               mobatk  <- 1
+               mobdef  <- 1
+               mobce <- 1
+               moblevel  <- 1
+               mobexp <- 5
+               combat
+            fimse
+         fimse
+      fimse
+   fimse
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+procedimento menu
+var
+   menu:inteiro
+inicio
+   main <- verdadeiro
+   carregando
+   timer 0
+   monstro <- ""
+   mobhp <- 0
+   mobhpmax <- 0
+   mobatk  <- 0
+   mobdef  <- 0
+   mobce <- 0
+   moblevel  <- 0
+   mobexp <- 0
+   limpatela
+   escreval("MENU")
+   escreval("")
+   escreval("1...Status jogador")
+   escreval("2...Lutar")
+   escreval("3...Sair")
+   leia(menu)
+   escolha menu
+   caso 1
+      limpatela
+      jogador
+   caso 2
+      limpatela
+      mob
+   caso 3
+      limpatela
+      carregando
+      main <- falso
+      exit
+   fimescolha
+fimprocedimento
+////////////////////////////////////////////////////////////////////////////////
+Inicio
+   jogadorhp <- 15
+   jogadorhpmax  <- 15
+   jogadoratk  <- 5
+   jogadordef  <- 5
+   jogadorca  <- 5
+   jogadorlevel  <- 1
+   jogadorexpmax <- 10*jogadorlevel
+   jogadorexp <- 0
+   equipload <- 5
+   escreval("Insira seu nome")
+   leia(jogador)
+   limpatela
+   escreval("Bem vindo ",jogador)
+   timer 1000
+   limpatela
+   escreval("Indo ao MENU")
+   timer 0
+   limpatela
+   menu
+   se main = verdadeiro entao
+      repita
+         combat
+      ate (jogadorhp <= 0) ou (mobhp <= 0)
+   fimse
+Fimalgoritmo
